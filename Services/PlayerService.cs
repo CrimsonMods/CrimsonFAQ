@@ -11,6 +11,10 @@ namespace CrimsonFAQ.Services;
 
 public class PlayerService
 {
+    static EntityQuery ActiveUsersQuery;
+
+    static EntityQuery AllUsersQuery;
+
     public static IEnumerable<Entity> GetUsers(bool includeDisabled = false)
     {
         NativeArray<Entity> userEntities = includeDisabled ? AllUsersQuery.ToEntityArray(Allocator.TempJob) : ActiveUsersQuery.ToEntityArray(Allocator.TempJob);
