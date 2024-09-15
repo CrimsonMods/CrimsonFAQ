@@ -51,4 +51,28 @@ internal class Basic
             ctx.Reply($"Unable to find player named {playerName}");
         }
     }
+
+    [Command("untrust", shortHand: "ut", description: "removes a player from the list of trusted users", adminOnly: true)]
+    public void RemoveTrusted(ChatCommandContext ctx, string playerName = "")
+    {
+        if (string.IsNullOrEmpty(playerName)) ctx.Reply("Must input a player name.");
+
+        var entity = PlayerService.GetUserByName(playerName, true);
+
+        if (!entity.Equals(Entity.Null) && entity.Has<User>())
+        {
+            if (Plugin.DB.RemoveTrusted(entity.Read<User>()))
+            {
+                ctx.Reply($"{playerName} removed from trusted FAQ users.");
+            }
+            else
+            {
+                ctx.Reply($"{playerName} is not in the trusted list");
+            }
+        }
+        else
+        {
+            ctx.Reply($"Unable to find player named {playerName}");
+        }
+    }
 }

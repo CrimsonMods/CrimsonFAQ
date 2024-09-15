@@ -98,6 +98,16 @@ public class Database
         if (Trusted.Contains(user.PlatformId.ToString())) return false;
 
         Trusted.Add(user.PlatformId.ToString());
+        SaveDatabase();
+        return true;
+    }
+
+    public bool RemoveTrusted()
+    {
+        if(!Trusted.Contains(user.PlatformId.ToString())) return false;
+
+        Trusted.Remove(user.PlatformId.ToString());
+        SaveDatabase();
         return true;
     }
 }
