@@ -40,7 +40,7 @@ public class Database
         {
             List<KeyResponse> template = new List<KeyResponse>();
 
-            KeyResponse response = new KeyResponse("discord", "Join our discord at discord.gg/abc", true, 30);
+            KeyResponse response = new KeyResponse("discord", "Join our discord at discord.gg/RBPesMj", true, 30);
             template.Add(response);
 
             var json = JsonSerializer.Serialize(template, new JsonSerializerOptions { WriteIndented = true});

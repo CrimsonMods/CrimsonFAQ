@@ -15,17 +15,17 @@ You give each KeyResponse a "Key" and a "Response". Players can query for the ke
 * Run server once to generate _CrimsonFAQ/responses.json_ and .cfg file
 * Set your preferred prefix in the cfg file (i.e. **?**discord)
 
-`
+```json
 [
   {
     "Key": "discord", // The key players input
-    "Response": "Join our discord at discord.gg/abc", // what the server responds with
+    "Response": "Join our discord at discord.gg/RBPesMj", // what the server responds with
     "IsGlobal": true, // global will broadcast to everyone, false it will be private only
     "GlobalCooldownMinutes": 30, // how often in minutes should it be broadcast global? If it is spammed, subsequential requests will be displayed only to requester
     "GlobalLastUsed": "0001-01-01T00:00:00" // do not touch this
   }
 ]
-`
+```
 
 ## Support
 
