@@ -102,7 +102,7 @@ public class Database
         return true;
     }
 
-    public bool RemoveTrusted()
+    public bool RemoveTrusted(User user)
     {
         if(!Trusted.Contains(user.PlatformId.ToString())) return false;
 
