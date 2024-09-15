@@ -22,6 +22,15 @@ public static class Responder
         var entityManager = VWorld.Server.EntityManager;
         var sender = message.SenderUserEntity.Read<User>();
 
+        if (response.IsAdmin)
+        {
+            if (!Plugin.DB.IsTrusted(sender)) return;
+            ServerChatUtils.SendSystemMessageToAllClients(entityManager, response.Response);
+            response.GlobalLastUsed = DateTime.Now;
+            message.Cancel();
+            return;
+        }
+
         if (response.IsGlobal)
         {
             var timeSinceLastUse = DateTime.Now - response.GlobalLastUsed;
@@ -33,11 +42,13 @@ public static class Responder
             else
             {
                 ServerChatUtils.SendSystemMessageToClient(entityManager, sender, response.Response);
+                message.Cancel();
             }
         }
         else
         {
             ServerChatUtils.SendSystemMessageToClient(entityManager, sender, response.Response);
+            message.Cancel();
         }
     }
 }

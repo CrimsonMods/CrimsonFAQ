@@ -14,6 +14,9 @@ public class KeyResponse
     [JsonPropertyName("IsGlobal")]
     public bool IsGlobal { get; set; }
 
+    [JsonPropertyName("IsAdmin")]
+    public bool IsAdmin { get; set; }
+
     [JsonPropertyName("GlobalCooldownMinutes")]
     public int GlobalCooldownMinutes { get; set; }
 
@@ -26,11 +29,12 @@ public class KeyResponse
     }
 
     [JsonConstructor]
-    public KeyResponse(string key, string response, bool isGlobal = false, int globalCooldownMinutes = 0)
+    public KeyResponse(string key, string response, bool isGlobal = false, bool isAdmin = false, int globalCooldownMinutes = 0)
     {
         Key = key;
         Response = response;
         IsGlobal = isGlobal;
+        IsAdmin = isAdmin;
         GlobalCooldownMinutes = globalCooldownMinutes;
         GlobalLastUsed = DateTime.MinValue;
     }

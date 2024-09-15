@@ -1,4 +1,5 @@
 ﻿using CrimsonFAQ.Structs;
+using ProjectM.Network;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,8 +10,10 @@ namespace CrimsonFAQ.Systems;
 public class Database
 {
     public static string ResponsesFile = Path.Combine(Plugin.ConfigFiles, "responses.json");
+    public static string TrustedFile = Path.Combine(Plugin.ConfigFiles, "trusted.json");
 
     public List<KeyResponse> Responses { get; set; }
+    public List<string> Trusted { get; set; }
 
     public Database()
     {
@@ -25,6 +28,10 @@ public class Database
             string json = File.ReadAllText(ResponsesFile);
             Responses = JsonSerializer.Deserialize<List<KeyResponse>>(json);
             Plugin.LogInstance.LogInfo($"Loaded Responses Database: {Responses.Count} entries.");
+
+            string jsonTrusted = File.ReadAllText(TrustedFile);
+            Trusted = JsonSerializer.Deserialize<List<string>>(jsonTrusted);
+            Plugin.LogInstance.LogInfo($"Loaded Trusted Database: {Trusted.Count} entries.");
             return true;
         }
         catch (Exception e)
@@ -34,18 +41,32 @@ public class Database
         }
     }
 
+    public void SaveDatabase()
+    {
+        var json = JsonSerializer.Serialize(Trusted);
+        File.WriteAllText(TrustedFile, json);
+    }
+
     public static void CreateDatabaseFiles()
     { 
         if(!File.Exists(ResponsesFile)) 
         {
             List<KeyResponse> template = new List<KeyResponse>();
 
-            KeyResponse response = new KeyResponse("discord", "Join our discord at discord.gg/RBPesMj", true, 30);
+            KeyResponse response = new KeyResponse("discord", "Join our discord at discord.gg/RBPesMj", true, false, 30);
             template.Add(response);
 
             var json = JsonSerializer.Serialize(template, new JsonSerializerOptions { WriteIndented = true});
 
             File.WriteAllText(ResponsesFile, json);
+        }
+
+        if(!File.Exists(TrustedFile))
+        {
+            List<string> template = new List<string>();
+
+            var json = JsonSerializer.Serialize(template, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(TrustedFile, json);
         }
     }
 
@@ -60,5 +81,23 @@ public class Database
         }
         
         return false;
+    }
+
+    public bool IsTrusted(User user)
+    {
+        if(user.IsAdmin || Trusted.Contains(user.PlatformId.ToString()))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool AddTrusted(User user)
+    {
+        if (Trusted.Contains(user.PlatformId.ToString())) return false;
+
+        Trusted.Add(user.PlatformId.ToString());
+        return true;
     }
 }

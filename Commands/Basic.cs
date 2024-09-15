@@ -1,5 +1,8 @@
 ﻿using CrimsonFAQ.Structs;
+using CrimsonFAQ.Services;
 using VampireCommandFramework;
+using Unity.Entities;
+using ProjectM.Network;
 
 namespace CrimsonFAQ.Commands;
 
@@ -23,5 +26,29 @@ internal class Basic
         }
 
         ctx.Reply(reply);
+    }
+
+    [Command("trust", shortHand: "t", description: "adds a player to the list of trusted users", adminOnly: true)]
+    public void AddTrusted(ChatCommandContext ctx, string playerName = "")
+    {
+        if (string.IsNullOrEmpty(playerName)) ctx.Reply("Must input a player name.");
+
+        var entity = PlayerService.GetUserByName(playerName, true);
+
+        if (!entity.Equals(Entity.Null) && entity.Has<User>())
+        {
+            if (Plugin.DB.AddTrusted(entity.Read<User>()))
+            {
+                ctx.Reply($"{playerName} added to trusted FAQ users.");
+            }
+            else
+            {
+                ctx.Reply($"{playerName} is already a trusted user.");
+            }
+        }
+        else
+        {
+            ctx.Reply($"Unable to find player named {playerName}");
+        }
     }
 }

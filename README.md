@@ -21,6 +21,7 @@ You give each KeyResponse a "Key" and a "Response". Players can query for the ke
     "Key": "discord", // The key players input
     "Response": "Join our discord at discord.gg/RBPesMj", // what the server responds with
     "IsGlobal": true, // global will broadcast to everyone, false it will be private only
+    "IsAdmin": false // these commands can only be triggered by admins (a trusted list is also maintained if you want specified users to access them; always global)
     "GlobalCooldownMinutes": 30, // how often in minutes should it be broadcast global? If it is spammed, subsequential requests will be displayed only to requester
     "GlobalLastUsed": "0001-01-01T00:00:00" // do not touch this
   }
