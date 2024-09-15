@@ -21,6 +21,7 @@ internal class Basic
         { 
             foreach(KeyResponse kp in Plugin.DB.Responses) 
             {
+                if(kp.isAdmin && !Plugin.DB.IsTrusted(ctx.User)) continue;
                 reply += kp.Key + "\n";
             }
         }
