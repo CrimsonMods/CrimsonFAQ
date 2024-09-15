@@ -11,34 +11,6 @@ namespace CrimsonFAQ.Services;
 
 public class PlayerService
 {
-    static readonly ComponentType[] UserComponent =
-        [
-            ComponentType.ReadOnly(Il2CppType.Of<User>()),
-        ];
-
-    static readonly ComponentType[] ClanComponent =
-        [
-            ComponentType.ReadOnly(Il2CppType.Of<ClanMemberStatus>()),
-        ];
-
-    static EntityQuery ActiveUsersQuery;
-
-    static EntityQuery AllUsersQuery;
-
-    static EntityQuery ClansQuery;
-
-    public static Dictionary<string, Entity> playerCache = []; //player name, player userEntity
-    public PlayerService()
-    {
-        ActiveUsersQuery = VWorld.Server.EntityManager.CreateEntityQuery(UserComponent);
-        AllUsersQuery = VWorld.Server.EntityManager.CreateEntityQuery(new EntityQueryDesc
-        {
-            All = UserComponent,
-            Options = EntityQueryOptions.IncludeDisabled
-        });
-        ClansQuery = VWorld.Server.EntityManager.CreateEntityQuery(ClanComponent);
-    }
-
     public static IEnumerable<Entity> GetUsers(bool includeDisabled = false)
     {
         NativeArray<Entity> userEntities = includeDisabled ? AllUsersQuery.ToEntityArray(Allocator.TempJob) : ActiveUsersQuery.ToEntityArray(Allocator.TempJob);
