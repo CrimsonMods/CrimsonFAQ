@@ -55,8 +55,8 @@ public readonly struct Settings
         }
     }
 
-    static readonly List<string> directoryPaths =
-        [
-            Plugin.ConfigFiles,
-        ];
+    static readonly List<string> directoryPaths = new List<string>
+    {
+        Plugin.ConfigFiles,
+    };
 }
