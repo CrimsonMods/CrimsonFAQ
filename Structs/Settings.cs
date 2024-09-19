@@ -11,6 +11,11 @@ public readonly struct Settings
     public static ConfigEntry<bool> FAQ { get; private set; }
     public static ConfigEntry<string> Prefix { get; private set; }
 
+    public static ConfigEntry<string> HexKey { get; private set; }
+    public static ConfigEntry<string> HexDescription { get; private set; }
+    public static ConfigEntry<string> HexMisc { get; private set; }
+    public static ConfigEntry<string> HexResponse { get; private set; }
+
 
     public static void InitConfig()
     {
@@ -25,6 +30,19 @@ public readonly struct Settings
 
         Prefix = InitConfigEntry("_Config", "Prefix", "?",
             "The prefix before information requests i.e. \"?discord\"");
+
+        // Hex Configs
+        HexKey = InitConfigEntry("Response Colors", "KeyColor", "#9cb730", 
+            "The hex value color that will be displayed for keys in .faq list");
+
+        HexDescription = InitConfigEntry("Response Colors", "DescriptionColor", "#309CB7",
+            "The hex value color that will be displayed for descriptions in .faq list");
+
+        HexMisc = InitConfigEntry("Response Colors", "MiscColor", "#b7309c",
+            "The hex value color that will be used for formatting elements like the dash in .faq list");
+
+        HexResponse = InitConfigEntry("Response Colors", "ResponseColor", "#9cb730",
+            "The hex value color that will be used for responding to user key queries");
     }
 
     static ConfigEntry<T> InitConfigEntry<T>(string section, string key, T defaultValue, string description)

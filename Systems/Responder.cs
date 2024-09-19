@@ -25,29 +25,29 @@ public static class Responder
         if (response.PermissionLevel > 0)
         {
             if (!Plugin.DB.IsTrusted(sender, response.PermissionLevel)) return;
-            ServerChatUtils.SendSystemMessageToAllClients(entityManager, response.Response);
+            ServerChatUtils.SendSystemMessageToAllClients(entityManager, $"<color={Settings.HexResponse.Value}>{response.Response}</color>");
             response.GlobalLastUsed = DateTime.Now;
-            message.Cancel();
+            //message.Cancel();
             return;
         }
 
         if (response.IsGlobal)
         {
             var timeSinceLastUse = DateTime.Now - response.GlobalLastUsed;
-            if (timeSinceLastUse.TotalMinutes > response.GlobalCooldownMinutes)
+            if (timeSinceLastUse.TotalSeconds > response.GlobalCooldownSeconds)
             {
-                ServerChatUtils.SendSystemMessageToAllClients(entityManager, response.Response);
+                ServerChatUtils.SendSystemMessageToAllClients(entityManager, $"<color={Settings.HexResponse.Value}>{response.Response}</color>");
                 response.GlobalLastUsed = DateTime.Now;
             }
             else
             {
-                ServerChatUtils.SendSystemMessageToClient(entityManager, sender, response.Response);
+                ServerChatUtils.SendSystemMessageToClient(entityManager, sender, $"<color={Settings.HexResponse.Value}>{response.Response}</color>");
                 message.Cancel();
             }
         }
         else
         {
-            ServerChatUtils.SendSystemMessageToClient(entityManager, sender, response.Response);
+            ServerChatUtils.SendSystemMessageToClient(entityManager, sender, $"<color={Settings.HexResponse.Value}>{response.Response}</color>");
             message.Cancel();
         }
     }

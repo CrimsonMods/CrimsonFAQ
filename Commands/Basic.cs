@@ -23,8 +23,8 @@ internal class Basic
             foreach(KeyResponse kp in Plugin.DB.Responses) 
             {
                 if(kp.PermissionLevel > 0 && !Plugin.DB.IsTrusted(ctx.User, kp.PermissionLevel)) continue;
-                string desc = !string.IsNullOrEmpty(kp.Description) ? $"- {kp.Description}" : "";
-                reply += $"{Settings.Prefix.Value}{kp.Key} {desc}\n";
+                string desc = !string.IsNullOrEmpty(kp.Description) ? $"<color={Settings.HexMisc.Value}>-</color> <color={Settings.HexDescription.Value}>{kp.Description}</color>" : "";
+                reply += $"<color={Settings.HexKey.Value}>{Settings.Prefix.Value}{kp.Key}</color> {desc}\n";
             }
         }
 
@@ -97,7 +97,7 @@ internal class Basic
                 }
             }
 
-            ctx.Reply($"Response collection completed with {updatedResponses} entries updated.");
+            ctx.Reply($"{updatedResponses} responses loaded.");
         }
         else
         {

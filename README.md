@@ -26,7 +26,23 @@ You give each KeyResponse a "Key" and a "Response". Players can query for the ke
     "GlobalLastUsed": "0001-01-01T00:00:00" // do not touch this
   }
 ]
+
+[
+  {
+    "Key": "discord",  // The key players input
+    "Response": "Join our discord at discord.gg/RBPesMj",  // what the server responds with
+    "Description": "discord link",  // a short description of what this displays; used for the .faq list command
+    "IsGlobal": true,  // global will broadcast to everyone, false it will be private only
+    "PermissionLevel": 0,  // controls who can access this key. 0 = Everyone, 1 = Trusted, 2 = Admin
+    "GlobalCooldownSeconds": 30  // how often in seconds should it be broadcast global? If it is spammed, subsequential requests will be displayed only to requester
+  }
+]
 ```
+
+In the _CrimsonFAQ.cfg_ filee you will see you can change a few common things; but you'll also notice that there is a section for Hex Colors.
+This will change how text is displayed in the commands & key query responses.
+
+Here is a way to easily pick hex colors: https://g.co/kgs/DxWQHt4
 
 ## Support
 
