@@ -15,7 +15,7 @@ You give each KeyResponse a "Key" and a "Response". Players can query for the ke
 * Run server once to generate _CrimsonFAQ/responses.json_ and .cfg file
 * Set your preferred prefix in the cfg file (i.e. **?**discord)
 
-```json
+```json 
 [
   {
     "Key": "discord",  // The key players input
