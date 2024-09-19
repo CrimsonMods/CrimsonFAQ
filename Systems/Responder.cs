@@ -22,9 +22,9 @@ public static class Responder
         var entityManager = VWorld.Server.EntityManager;
         var sender = message.SenderUserEntity.Read<User>();
 
-        if (response.IsAdmin)
+        if (response.PermissionLevel > 0)
         {
-            if (!Plugin.DB.IsTrusted(sender)) return;
+            if (!Plugin.DB.IsTrusted(sender, response.PermissionLevel)) return;
             ServerChatUtils.SendSystemMessageToAllClients(entityManager, response.Response);
             response.GlobalLastUsed = DateTime.Now;
             message.Cancel();

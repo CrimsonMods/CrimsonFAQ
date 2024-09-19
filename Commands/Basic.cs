@@ -3,6 +3,7 @@ using CrimsonFAQ.Services;
 using VampireCommandFramework;
 using Unity.Entities;
 using ProjectM.Network;
+using System.Linq;
 
 namespace CrimsonFAQ.Commands;
 
@@ -21,8 +22,9 @@ internal class Basic
         { 
             foreach(KeyResponse kp in Plugin.DB.Responses) 
             {
-                if(kp.IsAdmin && !Plugin.DB.IsTrusted(ctx.User)) continue;
-                reply += kp.Key + "\n";
+                if(kp.PermissionLevel > 0 && !Plugin.DB.IsTrusted(ctx.User, kp.PermissionLevel)) continue;
+                string desc = !string.IsNullOrEmpty(kp.Description) ? $"- {kp.Description}" : "";
+                reply += $"{Settings.Prefix.Value}{kp.Key} {desc}\n";
             }
         }
 
@@ -35,7 +37,6 @@ internal class Basic
         if (string.IsNullOrEmpty(playerName)) ctx.Reply("Must input a player name.");
 
         var entity = PlayerService.GetUserByName(playerName, true);
-
         if (!entity.Equals(Entity.Null) && entity.Has<User>())
         {
             if (Plugin.DB.AddTrusted(entity.Read<User>()))
@@ -74,6 +75,33 @@ internal class Basic
         else
         {
             ctx.Reply($"Unable to find player named {playerName}");
+        }
+    }
+
+    [Command("reload", shortHand: "r", description: "reloads the FAQ KeyResponse entries from json", adminOnly: true)]
+    public void ReloadJSON(ChatCommandContext ctx)
+    {
+        var oldResponses = Plugin.DB.Responses.ToArray();
+
+        if (Plugin.DB.LoadDatabase())
+        {
+            var newResponses = Plugin.DB.Responses;
+            int updatedResponses = 0;
+            
+            foreach (var newResponse in newResponses)
+            {
+                var oldResponse = oldResponses.FirstOrDefault(r => r.Key == newResponse.Key);
+                if (oldResponse == null || !oldResponse.Equals(newResponse))
+                {
+                    updatedResponses++;
+                }
+            }
+
+            ctx.Reply($"Response collection completed with {updatedResponses} entries updated.");
+        }
+        else
+        {
+            ctx.Reply($"Failed to retreive a valid collection from the responses.json file, please validate your formatting and values");
         }
     }
 }

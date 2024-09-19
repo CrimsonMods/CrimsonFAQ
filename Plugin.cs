@@ -2,6 +2,7 @@
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using Bloodstone.API;
+using CrimsonFAQ.Services;
 using CrimsonFAQ.Structs;
 using CrimsonFAQ.Systems;
 using HarmonyLib;
@@ -14,7 +15,7 @@ namespace CrimsonFAQ;
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 [BepInDependency("gg.deca.VampireCommandFramework")]
 [BepInDependency("gg.deca.Bloodstone")]
-public class Plugin : BasePlugin
+public class Plugin : BasePlugin, IRunOnInitialized
 {
     Harmony _harmony;
     internal static Plugin Instance { get; private set; }
@@ -22,6 +23,7 @@ public class Plugin : BasePlugin
     public static Harmony Harmony => Instance._harmony;
     public static ManualLogSource LogInstance => Instance.Log;
     public static Database DB { get; internal set; }
+    public static PlayerService PlayerService { get; private set; }
 
     public static string ConfigFiles => Path.Combine(Paths.ConfigPath, "CrimsonFAQ");
 
@@ -53,4 +55,10 @@ public class Plugin : BasePlugin
         return true;
     }
 
+    public void OnGameInitialized()
+    {
+        if (VWorld.IsClient) return;
+
+        PlayerService = new();
+    }
 }

@@ -11,11 +11,14 @@ public class KeyResponse
     [JsonPropertyName("Response")]
     public string Response { get; set; }
 
+    [JsonPropertyName("Description")]
+    public string Description { get; set; }
+
     [JsonPropertyName("IsGlobal")]
     public bool IsGlobal { get; set; }
 
-    [JsonPropertyName("IsAdmin")]
-    public bool IsAdmin { get; set; }
+    [JsonPropertyName("PermissionLevel")]
+    public int PermissionLevel { get; set; } // 0 = User, 1 = Trusted, 2 = Admin
 
     [JsonPropertyName("GlobalCooldownMinutes")]
     public int GlobalCooldownMinutes { get; set; }
@@ -29,12 +32,13 @@ public class KeyResponse
     }
 
     [JsonConstructor]
-    public KeyResponse(string key, string response, bool isGlobal = false, bool isAdmin = false, int globalCooldownMinutes = 0)
+    public KeyResponse(string key, string response, string description, bool isGlobal = false, int permissionLevel = 0, int globalCooldownMinutes = 0)
     {
         Key = key;
         Response = response;
+        Description = description;
         IsGlobal = isGlobal;
-        IsAdmin = isAdmin;
+        PermissionLevel = permissionLevel;
         GlobalCooldownMinutes = globalCooldownMinutes;
         GlobalLastUsed = DateTime.MinValue;
     }

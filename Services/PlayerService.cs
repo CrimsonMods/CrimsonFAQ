@@ -1,7 +1,7 @@
 using Bloodstone.API;
 using Il2CppInterop.Runtime;
-using ProjectM;
 using ProjectM.Network;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Collections;
@@ -11,32 +11,70 @@ namespace CrimsonFAQ.Services;
 
 public class PlayerService
 {
+    static readonly ComponentType[] UserComponent =
+        {
+            ComponentType.ReadOnly(Il2CppType.Of<User>())
+        };
     static EntityQuery ActiveUsersQuery;
 
     static EntityQuery AllUsersQuery;
 
+    public PlayerService()
+    {
+        AllUsersQuery = VWorld.Server.EntityManager.CreateEntityQuery(new EntityQueryDesc { 
+            All = UserComponent,
+            Options = EntityQueryOptions.IncludeDisabled
+        });
+
+        ActiveUsersQuery = VWorld.Server.EntityManager.CreateEntityQuery(UserComponent);
+    }
+
     public static IEnumerable<Entity> GetUsers(bool includeDisabled = false)
     {
-        NativeArray<Entity> userEntities = includeDisabled ? AllUsersQuery.ToEntityArray(Allocator.TempJob) : ActiveUsersQuery.ToEntityArray(Allocator.TempJob);
+        List<Entity> result = new List<Entity>();
         try
         {
-            foreach (Entity entity in userEntities)
+            NativeArray<Entity> userEntities = includeDisabled ? AllUsersQuery.ToEntityArray(Allocator.TempJob) : ActiveUsersQuery.ToEntityArray(Allocator.TempJob);
+
+            try
             {
-                if (VWorld.Server.EntityManager.Exists(entity))
+                foreach (Entity entity in userEntities)
                 {
-                    yield return entity;
+                    if (VWorld.Server.EntityManager.Exists(entity))
+                    {
+                        result.Add(entity);
+                    }
+                    else
+                    {
+                        Plugin.LogInstance.LogWarning($"Entity {entity.Index} does not exist in EntityManager");
+                    }
                 }
             }
+            finally
+            {
+                userEntities.Dispose();
+            }
         }
-        finally
+        catch (Exception ex)
         {
-            userEntities.Dispose();
+            Plugin.LogInstance.LogError($"Error in GetUsers: {ex.Message}");
+            Plugin.LogInstance.LogError($"Stack trace: {ex.StackTrace}");
+            return Enumerable.Empty<Entity>();
         }
+
+        return result;
     }
 
     public static Entity GetUserByName(string playerName, bool includeDisabled = false)
     {
-        Entity userEntity = GetUsers(includeDisabled).FirstOrDefault(entity => entity.Read<User>().CharacterName.Value.ToLower() == playerName.ToLower());
+        var users = GetUsers(includeDisabled).ToList();
+
+        Entity userEntity = users.FirstOrDefault(entity =>
+        {
+            var user = entity.Read<User>();
+            return user.CharacterName.Value.ToLower() == playerName.ToLower();
+        });
+
         return userEntity != Entity.Null ? userEntity : Entity.Null;
     }
 }

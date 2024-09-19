@@ -53,7 +53,7 @@ public class Database
         {
             List<KeyResponse> template = new List<KeyResponse>();
 
-            KeyResponse response = new KeyResponse("discord", "Join our discord at discord.gg/RBPesMj", true, false, 30);
+            KeyResponse response = new KeyResponse("discord", "Join our discord at discord.gg/RBPesMj", "discord link", true, 0, 30);
             template.Add(response);
 
             var json = JsonSerializer.Serialize(template, new JsonSerializerOptions { WriteIndented = true});
@@ -83,11 +83,16 @@ public class Database
         return false;
     }
 
-    public bool IsTrusted(User user)
+    public bool IsTrusted(User user, int keyLevel)
     {
-        if(user.IsAdmin || Trusted.Contains(user.PlatformId.ToString()))
+        if (keyLevel == 1)
         {
-            return true;
+            if (user.IsAdmin || Trusted.Contains(user.PlatformId.ToString())) return true;
+        }
+
+        if (keyLevel == 2)
+        {
+            if (user.IsAdmin) return true;
         }
 
         return false;
